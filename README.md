@@ -18,17 +18,18 @@ Rabbit/
 
 ## 🔑 Features
 
-- 🕵️ **Anonymous Posting** — Random identity like "Curious Rabbit #4521"
-- 🗳️ **Upvote / Downvote** — Best posts rise to the top (Reddit-style)
-- 💬 **Nested Comments** — Threaded discussion replies
-- 🏘️ **Communities** — Campus Confessions, Ask Seniors, Lost & Found, Study Materials, Marketplace, Events
-- 🔍 **Search** — Find questions and discussions
-- ⭐ **Rabbit Karma** — Earn points from upvotes
-- 🏅 **Achievement Badges** — Helpful Senior, Top Contributor, Placement Guru
-- 🔥 **Trending** — Reddit-style decay algorithm
-- 📊 **Polls** — Vote on campus decisions
-- 📅 **Event Hub** — College clubs announce events
-- 🛡️ **Safety** — College email verification, report system, admin panel, rate limiting
+- ✅ **Anonymous Posting** — Random identity like "Curious Rabbit #4521"
+- ✅ **Upvote / Downvote** — Best posts rise to the top (Reddit-style)
+- ✅ **Nested Comments** — Threaded discussion replies
+- ✅ **Communities** — Campus Confessions, Ask Seniors, Lost & Found, Study Materials, Marketplace, Events
+- ✅ **Search** — Find questions and discussions
+- ✅ **Safety (Core)** — College email verification, JWT Auth
+- ⏳ **Rabbit Karma** — Earn points from upvotes
+- ⏳ **Achievement Badges** — Helpful Senior, Top Contributor, Placement Guru
+- ⏳ **Trending** — Reddit-style decay algorithm
+- ⏳ **Polls** — Vote on campus decisions
+- ⏳ **Event Hub** — College clubs announce events
+- ⏳ **Safety (Advanced)** — Report system, admin panel, rate limiting
 
 ---
 
