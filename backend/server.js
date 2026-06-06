@@ -6,6 +6,10 @@ const { generalLimiter } = require('./middleware/rateLimit');
 
 // ─── Route imports ──────────────────────────────────────────────────────────
 const authRoutes = require('./routes/auth.routes');
+const communityRoutes = require('./routes/community.routes');
+const postRoutes = require('./routes/post.routes');
+const commentRoutes = require('./routes/comment.routes');
+const searchRoutes = require('./routes/search.routes');
 
 
 const app = express();
@@ -40,6 +44,10 @@ app.get('/api/health', (req, res) => {
 
 // ─── Mount Routes ───────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
+app.use('/api/communities', communityRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/search', searchRoutes);
 
 
 // ─── 404 Handler ────────────────────────────────────────────────────────────

@@ -11,7 +11,7 @@ Rabbit allows users to share thoughts, ask questions, and engage in discussions 
 ```
 Rabbit/
 ├── backend/    ← Node.js + Express + MongoDB API  (Nikhil)
-└── frontend/   ← UI/UX (Partner)
+└── frontend/   ← UI/UX (Prateeksha)
 ```
 
 ---
@@ -76,4 +76,4 @@ GET http://localhost:5001/api/health
 | Role | Responsibility |
 |---|---|
 | Nikhil | Backend — API, Database, Auth, Business Logic |
-| Partner | Frontend — UI/UX, React Components, Styling |
+| Prateeksha | Frontend — UI/UX, React Components, Styling |
