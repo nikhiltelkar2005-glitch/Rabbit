@@ -24,7 +24,7 @@ Rabbit/
 - ✅ **Communities** — Campus Confessions, Ask Seniors, Lost & Found, Study Materials, Marketplace, Events
 - ✅ **Search** — Find questions and discussions
 - ✅ **Safety (Core)** — College email verification, JWT Auth
-- ⏳ **Rabbit Karma** — Earn points from upvotes
+- ✅ **Rabbit Karma** — Earn points from upvotes
 - ⏳ **Achievement Badges** — Helpful Senior, Top Contributor, Placement Guru
 - ⏳ **Trending** — Reddit-style decay algorithm
 - ⏳ **Polls** — Vote on campus decisions

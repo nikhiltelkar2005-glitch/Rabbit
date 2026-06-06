@@ -1,5 +1,6 @@
 const Post = require('../models/Post');
 const Community = require('../models/Community');
+const User = require('../models/User');
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -46,17 +47,33 @@ exports.votePost = async (req, res, next) => {
 
     const userId = req.user.id;
 
+    let prevVote = 0;
+    if (post.upvotes.includes(userId)) prevVote = 1;
+    else if (post.downvotes.includes(userId)) prevVote = -1;
+
+    let newVote = 0;
+    if (type === 'upvote') newVote = 1;
+    else if (type === 'downvote') newVote = -1;
+
     // Remove user from both arrays first to reset their vote
     post.upvotes = post.upvotes.filter(id => id.toString() !== userId);
     post.downvotes = post.downvotes.filter(id => id.toString() !== userId);
 
-    if (type === 'upvote') {
+    if (newVote === 1) {
       post.upvotes.push(userId);
-    } else if (type === 'downvote') {
+    } else if (newVote === -1) {
       post.downvotes.push(userId);
     }
 
     await post.save();
+
+    const karmaDelta = newVote - prevVote;
+    if (karmaDelta !== 0) {
+      // Don't award karma if they vote on their own post
+      if (post.author.toString() !== userId) {
+        await User.findByIdAndUpdate(post.author, { $inc: { karma: karmaDelta } });
+      }
+    }
 
     res.status(200).json({ success: true, data: post });
   } catch (error) {

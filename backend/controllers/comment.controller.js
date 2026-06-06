@@ -1,5 +1,6 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
+const User = require('../models/User');
 
 exports.createComment = async (req, res, next) => {
   try {
@@ -53,16 +54,31 @@ exports.voteComment = async (req, res, next) => {
 
     const userId = req.user.id;
 
+    let prevVote = 0;
+    if (comment.upvotes.includes(userId)) prevVote = 1;
+    else if (comment.downvotes.includes(userId)) prevVote = -1;
+
+    let newVote = 0;
+    if (type === 'upvote') newVote = 1;
+    else if (type === 'downvote') newVote = -1;
+
     comment.upvotes = comment.upvotes.filter(id => id.toString() !== userId);
     comment.downvotes = comment.downvotes.filter(id => id.toString() !== userId);
 
-    if (type === 'upvote') {
+    if (newVote === 1) {
       comment.upvotes.push(userId);
-    } else if (type === 'downvote') {
+    } else if (newVote === -1) {
       comment.downvotes.push(userId);
     }
 
     await comment.save();
+
+    const karmaDelta = newVote - prevVote;
+    if (karmaDelta !== 0) {
+      if (comment.author.toString() !== userId) {
+        await User.findByIdAndUpdate(comment.author, { $inc: { karma: karmaDelta } });
+      }
+    }
 
     res.status(200).json({ success: true, data: comment });
   } catch (error) {

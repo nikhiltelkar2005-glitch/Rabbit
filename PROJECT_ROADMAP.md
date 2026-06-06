@@ -27,7 +27,7 @@ This document tracks the features we have added, what we are currently working o
 - [ ] **Anti-Spam:** Limit posts per hour, CAPTCHA for suspicious activity.
 
 ## 🏆 Phase 5: Cool Features for Final Polish
-- [ ] **Rabbit Karma:** Earn points from upvotes.
+- [x] **Rabbit Karma:** Earn points from upvotes.
 - [ ] **Achievement Badges:** Helpful Senior, Top Contributor, Placement Guru.
 - [ ] **Trending Section:** Trending today, Most discussed topic.
 - [ ] **Polls:** Example: "Which event should happen next month?"
