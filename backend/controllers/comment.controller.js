@@ -1,6 +1,7 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const { updateKarmaAndBadge } = require('../utils/badge.util');
 
 exports.createComment = async (req, res, next) => {
   try {
@@ -76,7 +77,7 @@ exports.voteComment = async (req, res, next) => {
     const karmaDelta = newVote - prevVote;
     if (karmaDelta !== 0) {
       if (comment.author.toString() !== userId) {
-        await User.findByIdAndUpdate(comment.author, { $inc: { karma: karmaDelta } });
+        await updateKarmaAndBadge(comment.author, karmaDelta);
       }
     }
 

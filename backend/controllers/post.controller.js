@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const Community = require('../models/Community');
 const User = require('../models/User');
+const { updateKarmaAndBadge } = require('../utils/badge.util');
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -71,7 +72,7 @@ exports.votePost = async (req, res, next) => {
     if (karmaDelta !== 0) {
       // Don't award karma if they vote on their own post
       if (post.author.toString() !== userId) {
-        await User.findByIdAndUpdate(post.author, { $inc: { karma: karmaDelta } });
+        await updateKarmaAndBadge(post.author, karmaDelta);
       }
     }
 
