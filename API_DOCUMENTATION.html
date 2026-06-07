@@ -17,7 +17,7 @@
 <p class="p1">Welcome, **Prateeksha** &amp; **Nikhil**!</p>
 <p class="p1">This document explains the current state of the Rabbit Backend API so that the Frontend can easily connect to it.</p>
 <p class="p2"><br></p>
-<p class="p1">Currently, the backend focuses purely on **Authentication &amp; Security**. More features (like Posts, Communities) will be added day-by-day.</p>
+<p class="p1">The backend now fully supports **Communities**, **Posts**, **Comments**, and features strict **College Silos**, **Trending algorithms**, and **Achievement Badges**!</p>
 <p class="p2"><br></p>
 <p class="p1">## Base URL</p>
 <p class="p1">All requests should be made to:</p>
@@ -66,7 +66,9 @@
 <p class="p1"><span class="Apple-converted-space">    </span>"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",</p>
 <p class="p1"><span class="Apple-converted-space">    </span>"user": {</p>
 <p class="p1"><span class="Apple-converted-space">      </span>"id": "60d0fe4f5311236168a109ca",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>"anonymousName": "Curious Rabbit #4521"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"anonymousName": "Curious Rabbit #4521",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"karma": 150,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"badge": "Top Contributor"</p>
 <p class="p1"><span class="Apple-converted-space">    </span>}</p>
 <p class="p1"><span class="Apple-converted-space">  </span>}</p>
 <p class="p1"><span class="Apple-converted-space">  </span>```</p>
@@ -112,6 +114,7 @@
 <p class="p1">**Get All Communities**</p>
 <p class="p1">- **URL:** `/api/communities`</p>
 <p class="p1">- **Method:** `GET`</p>
+<p class="p1">- **Description:** Returns all communities specifically belonging to the logged-in user's college network.</p>
 <p class="p2"><br></p>
 <p class="p1">**Join a Community (Protected)**</p>
 <p class="p1">- **URL:** `/api/communities/:id/join`</p>
@@ -127,7 +130,7 @@
 <p class="p1">**Get Posts by Community**</p>
 <p class="p1">- **URL:** `/api/posts/community/:communityId`</p>
 <p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Returns posts. Note that the author will only have their `anonymousName` exposed!</p>
+<p class="p1">- **Description:** Returns posts strictly filtered to the user's college domain. Note that the author will only have their `anonymousName` exposed! You can pass `?sort=new` or `?sort=trending` (default) parameters to change the sorting.</p>
 <p class="p2"><br></p>
 <p class="p1">**Upvote/Downvote a Post (Protected)**</p>
 <p class="p1">- **URL:** `/api/posts/:id/vote`</p>
@@ -163,7 +166,7 @@
 <p class="p1">**Search Communities and Posts**</p>
 <p class="p1">- **URL:** `/api/search?q=internship`</p>
 <p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Scans through all community names, descriptions, and post titles/contents for the keyword.</p>
+<p class="p1">- **Description:** Scans through all community names, descriptions, and post titles/contents strictly within the user's college network.</p>
 <p class="p2"><br></p>
 <p class="p1">---</p>
 <p class="p2"><br></p>
