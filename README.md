@@ -24,6 +24,7 @@ Rabbit/
 - ✅ **Communities** — Campus Confessions, Ask Seniors, Lost & Found, Study Materials, Marketplace, Events
 - ✅ **Search** — Find questions and discussions
 - ✅ **Safety (Core)** — College email verification, JWT Auth
+- ✅ **College Silos** — Strict database isolation so users only see content from their own college network
 - ✅ **Rabbit Karma** — Earn points from upvotes
 - ✅ **Achievement Badges** — Helpful Senior, Top Contributor, Placement Guru
 - ✅ **Trending** — Reddit-style decay algorithm
