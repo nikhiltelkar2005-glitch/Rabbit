@@ -4,6 +4,7 @@ This document tracks the features we have added, what we are currently working o
 
 ## ✅ Phase 1: Authentication & Security (Completed)
 - [x] **College Email Verification:** Only students with college email can join.
+- [x] **College Silos:** Strict database isolation so users only see content from their own college network.
 - [x] **Anonymous Identity Generation:** Users get random names (e.g., "Curious Rabbit #4521") upon signup.
 - [x] **Authentication System:** Login, Signup, OTP generation, and Password Reset.
 - [x] **Basic User Model:** Stores email, password, and anonymous name.
@@ -28,7 +29,7 @@ This document tracks the features we have added, what we are currently working o
 
 ## 🏆 Phase 5: Cool Features for Final Polish
 - [x] **Rabbit Karma:** Earn points from upvotes.
-- [ ] **Achievement Badges:** Helpful Senior, Top Contributor, Placement Guru.
-- [ ] **Trending Section:** Trending today, Most discussed topic.
+- [x] **Achievement Badges:** Helpful Senior, Top Contributor, Placement Guru.
+- [x] **Trending Section:** Trending today, Most discussed topic.
 - [ ] **Polls:** Example: "Which event should happen next month?"
 - [ ] **Event Hub:** College clubs can announce events.
