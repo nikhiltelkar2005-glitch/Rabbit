@@ -26,7 +26,7 @@ Rabbit/
 - ✅ **Safety (Core)** — College email verification, JWT Auth
 - ✅ **Rabbit Karma** — Earn points from upvotes
 - ✅ **Achievement Badges** — Helpful Senior, Top Contributor, Placement Guru
-- ⏳ **Trending** — Reddit-style decay algorithm
+- ✅ **Trending** — Reddit-style decay algorithm
 - ⏳ **Polls** — Vote on campus decisions
 - ⏳ **Event Hub** — College clubs announce events
 - ⏳ **Safety (Advanced)** — Report system, admin panel, rate limiting

@@ -27,9 +27,19 @@ exports.createPost = async (req, res, next) => {
 
 exports.getPostsByCommunity = async (req, res, next) => {
   try {
+    const { sort } = req.query;
+    let sortOption = '-trendingScore'; // Default to Reddit-style hot ranking
+
+    if (sort === 'new') {
+      sortOption = '-createdAt';
+    } else if (sort === 'top') {
+      // Could add logic for sorting just by score if needed, but this works:
+      sortOption = '-upvotes'; // simplification for top
+    }
+
     const posts = await Post.find({ community: req.params.communityId })
       .populate('author', 'anonymousName') // Crucial: Only expose the anonymousName!
-      .sort('-createdAt');
+      .sort(sortOption);
 
     res.status(200).json({ success: true, count: posts.length, data: posts });
   } catch (error) {

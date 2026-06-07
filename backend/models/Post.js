@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { calculateTrendingScore } = require('../utils/trending.util');
+
 
 const postSchema = new mongoose.Schema(
   {
@@ -36,6 +38,10 @@ const postSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+    trendingScore: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
@@ -49,7 +55,14 @@ postSchema.virtual('score').get(function() {
   return this.upvotes.length - this.downvotes.length;
 });
 
+// Pre-save hook to calculate trending score
+postSchema.pre('save', function(next) {
+  this.trendingScore = calculateTrendingScore(this.upvotes.length, this.downvotes.length, this.createdAt);
+  next();
+});
+
 // Add text indexes for search
 postSchema.index({ title: 'text', content: 'text' });
+postSchema.index({ trendingScore: -1 }); // Index for fast sorting by trending
 
 module.exports = mongoose.model('Post', postSchema);
