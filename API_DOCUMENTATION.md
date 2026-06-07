@@ -3,7 +3,7 @@
 Welcome, **Prateeksha** & **Nikhil**!
 This document explains the current state of the Rabbit Backend API so that the Frontend can easily connect to it.
 
-Currently, the backend focuses purely on **Authentication & Security**. More features (like Posts, Communities) will be added day-by-day.
+The backend now fully supports **Communities**, **Posts**, **Comments**, and features strict **College Silos**, **Trending algorithms**, and **Achievement Badges**!
 
 ## Base URL
 All requests should be made to:
@@ -52,7 +52,9 @@ These routes handle user login, signup, and verification. They are located under
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
       "id": "60d0fe4f5311236168a109ca",
-      "anonymousName": "Curious Rabbit #4521"
+      "anonymousName": "Curious Rabbit #4521",
+      "karma": 150,
+      "badge": "Top Contributor"
     }
   }
   ```
@@ -98,6 +100,7 @@ These routes handle user login, signup, and verification. They are located under
 **Get All Communities**
 - **URL:** `/api/communities`
 - **Method:** `GET`
+- **Description:** Returns all communities specifically belonging to the logged-in user's college network.
 
 **Join a Community (Protected)**
 - **URL:** `/api/communities/:id/join`
@@ -113,7 +116,7 @@ These routes handle user login, signup, and verification. They are located under
 **Get Posts by Community**
 - **URL:** `/api/posts/community/:communityId`
 - **Method:** `GET`
-- **Description:** Returns posts. Note that the author will only have their `anonymousName` exposed!
+- **Description:** Returns posts strictly filtered to the user's college domain. Note that the author will only have their `anonymousName` exposed! You can pass `?sort=new` or `?sort=trending` (default) parameters to change the sorting.
 
 **Upvote/Downvote a Post (Protected)**
 - **URL:** `/api/posts/:id/vote`
@@ -149,7 +152,7 @@ These routes handle user login, signup, and verification. They are located under
 **Search Communities and Posts**
 - **URL:** `/api/search?q=internship`
 - **Method:** `GET`
-- **Description:** Scans through all community names, descriptions, and post titles/contents for the keyword.
+- **Description:** Scans through all community names, descriptions, and post titles/contents strictly within the user's college network.
 
 ---
 
