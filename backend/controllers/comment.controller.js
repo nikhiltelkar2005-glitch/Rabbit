@@ -12,6 +12,10 @@ exports.createComment = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found.' });
     }
 
+    if (post.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot comment on posts outside your college.' });
+    }
+
     if (parentCommentId) {
       const parent = await Comment.findById(parentCommentId);
       if (!parent) {
@@ -23,7 +27,8 @@ exports.createComment = async (req, res, next) => {
       content,
       post: postId,
       parentComment: parentCommentId || null,
-      author: req.user.id
+      author: req.user.id,
+      collegeDomain: req.user.collegeDomain
     });
 
     res.status(201).json({ success: true, data: comment });
@@ -34,7 +39,10 @@ exports.createComment = async (req, res, next) => {
 
 exports.getCommentsForPost = async (req, res, next) => {
   try {
-    const comments = await Comment.find({ post: req.params.postId })
+    const comments = await Comment.find({ 
+      post: req.params.postId,
+      collegeDomain: req.user.collegeDomain 
+    })
       .populate('author', 'anonymousName')
       .sort('createdAt'); // Sort oldest first so threads read naturally
 
@@ -51,6 +59,10 @@ exports.voteComment = async (req, res, next) => {
 
     if (!comment) {
       return res.status(404).json({ success: false, message: 'Comment not found.' });
+    }
+
+    if (comment.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot vote on comments outside your college.' });
     }
 
     const userId = req.user.id;

@@ -34,6 +34,11 @@ const commentSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+    collegeDomain: {
+      type: String,
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,

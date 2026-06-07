@@ -42,6 +42,11 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    collegeDomain: {
+      type: String,
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,

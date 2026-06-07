@@ -160,6 +160,12 @@ const login = async (req, res, next) => {
       });
     }
 
+    // Backfill collegeDomain for older accounts
+    if (!user.collegeDomain) {
+      user.collegeDomain = user.email.split('@')[1];
+      await user.save();
+    }
+
     if (user.isBanned) {
       return res.status(403).json({
         success: false,

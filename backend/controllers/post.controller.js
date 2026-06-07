@@ -12,11 +12,16 @@ exports.createPost = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Community not found.' });
     }
 
+    if (community.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot post in a community outside your college.' });
+    }
+
     const post = await Post.create({
       title,
       content,
       community: communityId,
-      author: req.user.id
+      author: req.user.id,
+      collegeDomain: req.user.collegeDomain
     });
 
     res.status(201).json({ success: true, data: post });
@@ -37,7 +42,10 @@ exports.getPostsByCommunity = async (req, res, next) => {
       sortOption = '-upvotes'; // simplification for top
     }
 
-    const posts = await Post.find({ community: req.params.communityId })
+    const posts = await Post.find({ 
+      community: req.params.communityId,
+      collegeDomain: req.user.collegeDomain
+    })
       .populate('author', 'anonymousName') // Crucial: Only expose the anonymousName!
       .sort(sortOption);
 
@@ -54,6 +62,10 @@ exports.votePost = async (req, res, next) => {
 
     if (!post) {
       return res.status(404).json({ success: false, message: 'Post not found.' });
+    }
+
+    if (post.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot vote on posts outside your college.' });
     }
 
     const userId = req.user.id;

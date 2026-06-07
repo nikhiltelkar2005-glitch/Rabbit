@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false, // Never returned in queries by default
     },
+    collegeDomain: {
+      type: String,
+      index: true,
+    },
 
     // ─── Anonymous Identity ────────────────────────────────────────────
     anonymousName: {
@@ -85,8 +89,16 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// ─── Hash password before saving ───────────────────────────────────────────
+// ─── Pre-save hooks ────────────────────────────────────────────────────────
 userSchema.pre('save', async function (next) {
+  // Extract college domain from email if not present
+  if (this.isModified('email') || !this.collegeDomain) {
+    if (this.email) {
+      this.collegeDomain = this.email.split('@')[1];
+    }
+  }
+
+  // Hash password
   if (!this.isModified('passwordHash')) return next();
   this.passwordHash = await bcrypt.hash(this.passwordHash, 12);
   next();

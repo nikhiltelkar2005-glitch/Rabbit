@@ -4,16 +4,20 @@ exports.createCommunity = async (req, res, next) => {
   try {
     const { name, description } = req.body;
 
-    const existingCommunity = await Community.findOne({ name: name.toLowerCase() });
+    const existingCommunity = await Community.findOne({ 
+      name: name.toLowerCase(),
+      collegeDomain: req.user.collegeDomain 
+    });
     if (existingCommunity) {
-      return res.status(400).json({ success: false, message: 'Community with this name already exists.' });
+      return res.status(400).json({ success: false, message: 'Community with this name already exists in your college.' });
     }
 
     const community = await Community.create({
       name,
       description,
       creator: req.user.id,
-      members: [req.user.id] // Creator automatically joins
+      members: [req.user.id], // Creator automatically joins
+      collegeDomain: req.user.collegeDomain
     });
 
     res.status(201).json({ success: true, data: community });
@@ -24,7 +28,7 @@ exports.createCommunity = async (req, res, next) => {
 
 exports.getAllCommunities = async (req, res, next) => {
   try {
-    const communities = await Community.find().select('-__v');
+    const communities = await Community.find({ collegeDomain: req.user.collegeDomain }).select('-__v');
     res.status(200).json({ success: true, count: communities.length, data: communities });
   } catch (error) {
     next(error);
@@ -36,6 +40,10 @@ exports.joinCommunity = async (req, res, next) => {
     const community = await Community.findById(req.params.id);
     if (!community) {
       return res.status(404).json({ success: false, message: 'Community not found.' });
+    }
+
+    if (community.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot join a community from outside your college.' });
     }
 
     if (community.members.includes(req.user.id)) {

@@ -11,13 +11,13 @@ exports.searchQuery = async (req, res, next) => {
 
     // Perform text search on Communities
     const communities = await Community.find(
-      { $text: { $search: q } },
+      { $text: { $search: q }, collegeDomain: req.user.collegeDomain },
       { score: { $meta: 'textScore' } }
     ).sort({ score: { $meta: 'textScore' } });
 
     // Perform text search on Posts
     const posts = await Post.find(
-      { $text: { $search: q } },
+      { $text: { $search: q }, collegeDomain: req.user.collegeDomain },
       { score: { $meta: 'textScore' } }
     )
       .populate('author', 'anonymousName')
