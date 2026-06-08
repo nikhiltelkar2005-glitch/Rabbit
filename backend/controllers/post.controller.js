@@ -5,7 +5,7 @@ const { updateKarmaAndBadge } = require('../utils/badge.util');
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, content, communityId } = req.body;
+    const { title, content, communityId, isPoll, pollOptions, pollEndsAt } = req.body;
 
     const community = await Community.findById(communityId);
     if (!community) {
@@ -16,12 +16,27 @@ exports.createPost = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'You cannot post in a community outside your college.' });
     }
 
+    let processedPollOptions = [];
+    if (isPoll) {
+      if (!Array.isArray(pollOptions) || pollOptions.length < 2 || pollOptions.length > 6) {
+        return res.status(400).json({ success: false, message: 'A poll must have between 2 and 6 options.' });
+      }
+      processedPollOptions = pollOptions.map(opt => ({
+        optionText: opt,
+        votes: 0,
+        voters: []
+      }));
+    }
+
     const post = await Post.create({
       title,
       content,
       community: communityId,
       author: req.user.id,
-      collegeDomain: req.user.collegeDomain
+      collegeDomain: req.user.collegeDomain,
+      isPoll: isPoll || false,
+      pollOptions: processedPollOptions,
+      pollEndsAt: pollEndsAt || null
     });
 
     res.status(201).json({ success: true, data: post });
@@ -97,6 +112,56 @@ exports.votePost = async (req, res, next) => {
         await updateKarmaAndBadge(post.author, karmaDelta);
       }
     }
+
+    res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.votePoll = async (req, res, next) => {
+  try {
+    const { optionId } = req.body;
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Post not found.' });
+    }
+
+    if (!post.isPoll) {
+      return res.status(400).json({ success: false, message: 'This post is not a poll.' });
+    }
+
+    if (post.collegeDomain !== req.user.collegeDomain) {
+      return res.status(403).json({ success: false, message: 'You cannot vote on polls outside your college.' });
+    }
+
+    if (post.pollEndsAt && new Date() > new Date(post.pollEndsAt)) {
+      return res.status(400).json({ success: false, message: 'This poll has ended.' });
+    }
+
+    const userId = req.user.id;
+
+    // Check if the user already voted for any option and remove them
+    post.pollOptions.forEach(option => {
+      const voterIndex = option.voters.findIndex(v => v.toString() === userId);
+      if (voterIndex !== -1) {
+        option.voters.splice(voterIndex, 1);
+        option.votes = Math.max(0, option.votes - 1);
+      }
+    });
+
+    // Add user to new option if optionId is provided (allows removing vote if optionId is null)
+    if (optionId) {
+      const selectedOption = post.pollOptions.find(opt => opt._id.toString() === optionId);
+      if (!selectedOption) {
+        return res.status(404).json({ success: false, message: 'Poll option not found.' });
+      }
+      selectedOption.voters.push(userId);
+      selectedOption.votes += 1;
+    }
+
+    await post.save();
 
     res.status(200).json({ success: true, data: post });
   } catch (error) {

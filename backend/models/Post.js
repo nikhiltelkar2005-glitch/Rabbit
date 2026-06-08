@@ -16,6 +16,33 @@ const postSchema = new mongoose.Schema(
       required: [true, 'Please provide post content'],
       maxlength: [5000, 'Content cannot exceed 5000 characters'],
     },
+    isPoll: {
+      type: Boolean,
+      default: false,
+    },
+    pollOptions: [
+      {
+        optionText: {
+          type: String,
+          required: true,
+          trim: true,
+          maxlength: [100, 'Poll option cannot exceed 100 characters'],
+        },
+        votes: {
+          type: Number,
+          default: 0,
+        },
+        voters: [
+          {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+          },
+        ],
+      },
+    ],
+    pollEndsAt: {
+      type: Date,
+    },
     author: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
