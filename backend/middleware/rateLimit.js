@@ -84,4 +84,16 @@ const reportLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = { generalLimiter, authLimiter, postLimiter, voteLimiter, otpLimiter, eventLimiter, reportLimiter };
+/**
+ * DM limiter
+ * 30 messages per 10 minutes — prevents spam DMs
+ */
+const dmLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 30,
+  message: { success: false, message: 'Too many messages. Please slow down.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+module.exports = { generalLimiter, authLimiter, postLimiter, voteLimiter, otpLimiter, eventLimiter, reportLimiter, dmLimiter };

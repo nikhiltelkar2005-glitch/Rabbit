@@ -68,6 +68,11 @@ const eventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Optional Cloudinary banner image
+    imageUrl: {
+      type: String,
+      default: null,
+    },
     maxAttendees: {
       type: Number,
       default: null, // null = unlimited

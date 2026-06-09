@@ -1,8 +1,15 @@
 const User = require('../models/User');
+const { createNotification } = require('./notification.util');
+
+const BADGE_THRESHOLDS = [
+  { karma: 1000, badge: 'Placement Guru' },
+  { karma: 500,  badge: 'Helpful Senior' },
+  { karma: 150,  badge: 'Top Contributor' },
+  { karma: 50,   badge: 'Active Member' },
+];
 
 const updateKarmaAndBadge = async (userId, karmaDelta) => {
   try {
-    // Increment karma and get the updated user
     const user = await User.findByIdAndUpdate(
       userId,
       { $inc: { karma: karmaDelta } },
@@ -12,20 +19,26 @@ const updateKarmaAndBadge = async (userId, karmaDelta) => {
     if (!user) return null;
 
     let newBadge = 'New Rabbit';
-    if (user.karma >= 1000) {
-      newBadge = 'Placement Guru';
-    } else if (user.karma >= 500) {
-      newBadge = 'Helpful Senior';
-    } else if (user.karma >= 150) {
-      newBadge = 'Top Contributor';
-    } else if (user.karma >= 50) {
-      newBadge = 'Active Member';
+    for (const threshold of BADGE_THRESHOLDS) {
+      if (user.karma >= threshold.karma) {
+        newBadge = threshold.badge;
+        break;
+      }
     }
 
-    // Update badge if it has changed
     if (user.badge !== newBadge) {
       user.badge = newBadge;
       await user.save();
+
+      // Notify the user they earned a new badge
+      await createNotification({
+        recipient: user._id,
+        type: 'badge_earned',
+        message: `🏅 You just earned the "${newBadge}" badge! Keep it up!`,
+        referenceType: null,
+        referenceId: null,
+        collegeDomain: user.collegeDomain,
+      });
     }
 
     return user;

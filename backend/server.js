@@ -12,6 +12,10 @@ const commentRoutes = require('./routes/comment.routes');
 const searchRoutes = require('./routes/search.routes');
 const eventRoutes = require('./routes/event.routes');
 const reportRoutes = require('./routes/report.routes');
+const notificationRoutes = require('./routes/notification.routes');
+const dmRoutes = require('./routes/dm.routes');
+const amaRoutes = require('./routes/ama.routes');
+const leaderboardRoutes = require('./routes/leaderboard.routes');
 
 
 const app = express();
@@ -52,6 +56,10 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/dms', dmRoutes);
+app.use('/api/amas', amaRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 
 // ─── 404 Handler ────────────────────────────────────────────────────────────

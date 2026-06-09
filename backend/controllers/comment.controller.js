@@ -2,7 +2,13 @@ const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const User = require('../models/User');
 const { updateKarmaAndBadge } = require('../utils/badge.util');
+const { createNotification } = require('../utils/notification.util');
 
+// ══════════════════════════════════════════════════════════════════════════════
+// @desc    Create a comment or reply
+// @route   POST /api/comments
+// @access  Protected
+// ══════════════════════════════════════════════════════════════════════════════
 exports.createComment = async (req, res, next) => {
   try {
     const { content, postId, parentCommentId } = req.body;
@@ -16,9 +22,10 @@ exports.createComment = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'You cannot comment on posts outside your college.' });
     }
 
+    let parentComment = null;
     if (parentCommentId) {
-      const parent = await Comment.findById(parentCommentId);
-      if (!parent) {
+      parentComment = await Comment.findById(parentCommentId);
+      if (!parentComment) {
         return res.status(404).json({ success: false, message: 'Parent comment not found.' });
       }
     }
@@ -28,8 +35,32 @@ exports.createComment = async (req, res, next) => {
       post: postId,
       parentComment: parentCommentId || null,
       author: req.user.id,
-      collegeDomain: req.user.collegeDomain
+      collegeDomain: req.user.collegeDomain,
     });
+
+    // Notify post author when someone comments (not when they comment on their own post)
+    if (post.author.toString() !== req.user.id) {
+      await createNotification({
+        recipient: post.author,
+        type: 'post_reply',
+        message: `${req.user.anonymousName} commented on your post: "${post.title.substring(0, 50)}"`,
+        referenceType: 'post',
+        referenceId: post._id,
+        collegeDomain: req.user.collegeDomain,
+      });
+    }
+
+    // Notify parent comment author when someone replies to their comment
+    if (parentComment && parentComment.author.toString() !== req.user.id) {
+      await createNotification({
+        recipient: parentComment.author,
+        type: 'comment_reply',
+        message: `${req.user.anonymousName} replied to your comment.`,
+        referenceType: 'comment',
+        referenceId: comment._id,
+        collegeDomain: req.user.collegeDomain,
+      });
+    }
 
     res.status(201).json({ success: true, data: comment });
   } catch (error) {
@@ -37,14 +68,19 @@ exports.createComment = async (req, res, next) => {
   }
 };
 
+// ══════════════════════════════════════════════════════════════════════════════
+// @desc    Get all comments for a post
+// @route   GET /api/comments/post/:postId
+// @access  Protected
+// ══════════════════════════════════════════════════════════════════════════════
 exports.getCommentsForPost = async (req, res, next) => {
   try {
-    const comments = await Comment.find({ 
+    const comments = await Comment.find({
       post: req.params.postId,
-      collegeDomain: req.user.collegeDomain 
+      collegeDomain: req.user.collegeDomain,
     })
-      .populate('author', 'anonymousName')
-      .sort('createdAt'); // Sort oldest first so threads read naturally
+      .populate('author', 'anonymousName badge')
+      .sort('createdAt');
 
     res.status(200).json({ success: true, count: comments.length, data: comments });
   } catch (error) {
@@ -52,6 +88,11 @@ exports.getCommentsForPost = async (req, res, next) => {
   }
 };
 
+// ══════════════════════════════════════════════════════════════════════════════
+// @desc    Upvote / downvote a comment
+// @route   POST /api/comments/:id/vote
+// @access  Protected
+// ══════════════════════════════════════════════════════════════════════════════
 exports.voteComment = async (req, res, next) => {
   try {
     const { type } = req.body; // 'upvote', 'downvote', or 'none'
@@ -78,19 +119,14 @@ exports.voteComment = async (req, res, next) => {
     comment.upvotes = comment.upvotes.filter(id => id.toString() !== userId);
     comment.downvotes = comment.downvotes.filter(id => id.toString() !== userId);
 
-    if (newVote === 1) {
-      comment.upvotes.push(userId);
-    } else if (newVote === -1) {
-      comment.downvotes.push(userId);
-    }
+    if (newVote === 1) comment.upvotes.push(userId);
+    else if (newVote === -1) comment.downvotes.push(userId);
 
     await comment.save();
 
     const karmaDelta = newVote - prevVote;
-    if (karmaDelta !== 0) {
-      if (comment.author.toString() !== userId) {
-        await updateKarmaAndBadge(comment.author, karmaDelta);
-      }
+    if (karmaDelta !== 0 && comment.author.toString() !== userId) {
+      await updateKarmaAndBadge(comment.author, karmaDelta);
     }
 
     res.status(200).json({ success: true, data: comment });

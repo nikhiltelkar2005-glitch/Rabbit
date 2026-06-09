@@ -31,6 +31,12 @@ Rabbit/
 - ✅ **Polls** — Vote on campus decisions
 - ✅ **Event Hub** — College clubs announce events, RSVP, capacity control
 - ✅ **Safety (Advanced)** — Report system, admin panel, ban/unban users, admin content deletion
+- ✅ **Anonymous DMs** — Message any user by their anonymous name; full inbox & conversation view
+- ✅ **Anonymous AMA** — Time-limited Ask Me Anything sessions with upvoteable questions
+- ✅ **Leaderboard** — Top karma earners in your college + your own rank
+- ✅ **Notifications** — In-app alerts for replies, upvote milestones, badges, events, AMAs, DMs
+- ✅ **Media Uploads** — Attach images to posts via Cloudinary (multipart/form-data)
+- ✅ **Post Flairs** — Tag posts as `placement`, `rant`, `advice`, `confession`, `exam_help`, etc.
 
 ---
 
@@ -70,8 +76,12 @@ GET http://localhost:5001/api/health
 | Posts | `/api/posts` | ✅ |
 | Comments | `/api/comments` | ✅ |
 | Search | `/api/search` | ✅ |
-| **Events** | **`/api/events`** | ✅ |
-| **Reports / Admin** | **`/api/reports`** | ✅ (Admin for some) |
+| Events | `/api/events` | ✅ |
+| Reports / Admin | `/api/reports` | ✅ (Admin for some) |
+| **Notifications** | **`/api/notifications`** | ✅ |
+| **DMs** | **`/api/dms`** | ✅ |
+| **AMA** | **`/api/amas`** | ✅ |
+| **Leaderboard** | **`/api/leaderboard`** | ✅ |
 
 ### 🎉 Event Hub — `/api/events`
 | Method | Endpoint | Description |
@@ -94,6 +104,37 @@ GET http://localhost:5001/api/health
 | `PATCH` | `/api/reports/admin/unban/:userId` | Admin | Unban a user |
 | `DELETE` | `/api/reports/admin/post/:postId` | Admin | Delete any post |
 | `DELETE` | `/api/reports/admin/comment/:commentId` | Admin | Delete any comment |
+
+### 💬 Anonymous DMs — `/api/dms`
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/dms` | Inbox — latest message per conversation |
+| `POST` | `/api/dms` | Send a DM (`recipientAnonymousName`, `content`) |
+| `GET` | `/api/dms/:anonymousName` | Full conversation thread (auto-marks as read) |
+
+### ❓ AMA — `/api/amas`
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/amas` | List AMAs (`?filter=open\|closed\|all`) |
+| `POST` | `/api/amas` | Create AMA session |
+| `GET` | `/api/amas/:id` | Single AMA + sorted questions |
+| `POST` | `/api/amas/:id/ask` | Ask a question |
+| `PATCH` | `/api/amas/:id/answer/:questionId` | Answer (host only) |
+| `POST` | `/api/amas/:id/questions/:questionId/upvote` | Upvote a question |
+| `PATCH` | `/api/amas/:id/close` | Close AMA early (host or admin) |
+
+### 🔔 Notifications — `/api/notifications`
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/notifications` | Get all notifications + unread count |
+| `PATCH` | `/api/notifications/read-all` | Mark all as read |
+| `PATCH` | `/api/notifications/:id/read` | Mark one as read |
+| `DELETE` | `/api/notifications/:id` | Delete a notification |
+
+### 🏆 Leaderboard — `/api/leaderboard`
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/leaderboard` | Top karma earners + your own rank (`?limit=10`) |
 
 ---
 

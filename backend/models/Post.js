@@ -16,6 +16,17 @@ const postSchema = new mongoose.Schema(
       required: [true, 'Please provide post content'],
       maxlength: [5000, 'Content cannot exceed 5000 characters'],
     },
+    // Post flair / tag
+    flair: {
+      type: String,
+      default: null,
+      enum: [null, 'placement', 'exam_help', 'rant', 'advice', 'funny', 'confession', 'discussion', 'question', 'announcement', 'lost_found'],
+    },
+    // Optional Cloudinary image URL
+    imageUrl: {
+      type: String,
+      default: null,
+    },
     isPoll: {
       type: Boolean,
       default: false,
