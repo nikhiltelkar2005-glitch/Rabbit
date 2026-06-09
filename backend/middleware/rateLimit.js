@@ -60,4 +60,28 @@ const otpLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = { generalLimiter, authLimiter, postLimiter, voteLimiter, otpLimiter };
+/**
+ * Event creation limiter
+ * 3 events per hour per IP — clubs can't spam events
+ */
+const eventLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  message: { success: false, message: 'Event limit reached. You can create up to 3 events per hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+/**
+ * Report submission limiter
+ * 10 reports per hour per IP — prevents mass-reporting abuse
+ */
+const reportLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: { success: false, message: 'Report limit reached. You can submit up to 10 reports per hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+module.exports = { generalLimiter, authLimiter, postLimiter, voteLimiter, otpLimiter, eventLimiter, reportLimiter };

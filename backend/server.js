@@ -10,6 +10,8 @@ const communityRoutes = require('./routes/community.routes');
 const postRoutes = require('./routes/post.routes');
 const commentRoutes = require('./routes/comment.routes');
 const searchRoutes = require('./routes/search.routes');
+const eventRoutes = require('./routes/event.routes');
+const reportRoutes = require('./routes/report.routes');
 
 
 const app = express();
@@ -48,6 +50,8 @@ app.use('/api/communities', communityRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/reports', reportRoutes);
 
 
 // ─── 404 Handler ────────────────────────────────────────────────────────────
