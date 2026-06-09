@@ -16,7 +16,7 @@ exports.createCommunity = async (req, res, next) => {
       name,
       description,
       creator: req.user.id,
-      members: [req.user.id], // Creator automatically joins
+      members: [req.user.id], // Creator automation
       collegeDomain: req.user.collegeDomain
     });
 
