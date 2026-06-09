@@ -1,182 +1,256 @@
 # Rabbit API Documentation 🐰
 
 Welcome, **Prateeksha** & **Nikhil**!
-This document explains the current state of the Rabbit Backend API so that the Frontend can easily connect to it.
+This document explains the complete Rabbit Backend API so the Frontend can easily connect to it.
 
-The backend now fully supports **Communities**, **Posts**, **Comments**, and features strict **College Silos**, **Trending algorithms**, and **Achievement Badges**!
+The backend fully supports **Communities**, **Posts**, **Comments**, **Events**, **AMA**, **DMs**, **Notifications**, **Reports**, **Leaderboard**, with strict **College Silos**, **Trending algorithms**, **Achievement Badges**, **Post Flairs**, and **Media Uploads**!
 
 ## Base URL
 All requests should be made to:
 `http://localhost:5001/api`
 
+> **Auth Header (Protected routes):** `Authorization: Bearer <your_jwt_token>`
+
 ---
 
-## 1. Authentication Endpoints
+## 1. Authentication — `/api/auth`
 
-These routes handle user login, signup, and verification. They are located under `/api/auth/`.
+### 1.1 Register
+- **`POST /auth/register`**
+- **Body:** `{ "email": "student@college.edu.in", "password": "SecurePassword123" }`
+- Sends a 6-digit OTP to the college email.
 
-### 1.1 Register a New User
-- **URL:** `/auth/register`
-- **Method:** `POST`
-- **Description:** Creates a new user account. The email *must* end with the college domain (e.g., `@college.edu.in`).
-- **Body:**
-  ```json
-  {
-    "email": "student@college.edu.in",
-    "password": "SecurePassword123"
-  }
-  ```
-- **Response (200 OK):**
-  ```json
-  {
-    "success": true,
-    "message": "OTP sent to your email. Please verify."
-  }
-  ```
-
-### 1.2 Verify Email with OTP
-- **URL:** `/auth/verify-email`
-- **Method:** `POST`
-- **Description:** Verifies the user's email using the OTP sent during registration.
-- **Body:**
-  ```json
-  {
-    "email": "student@college.edu.in",
-    "otp": "123456"
-  }
-  ```
-- **Response (200 OK):**
-  ```json
-  {
-    "success": true,
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": "60d0fe4f5311236168a109ca",
-      "anonymousName": "Curious Rabbit #4521",
-      "karma": 150,
-      "badge": "Top Contributor"
-    }
-  }
-  ```
-  *(Note: Save the `token` in localStorage or cookies for future requests!)*
+### 1.2 Verify Email (OTP)
+- **`POST /auth/verify-email`**
+- **Body:** `{ "email": "student@college.edu.in", "otp": "123456" }`
+- Returns `token` + `user` object on success. **Save the token!**
 
 ### 1.3 Login
-- **URL:** `/auth/login`
-- **Method:** `POST`
-- **Description:** Logs in an existing verified user.
-- **Body:**
-  ```json
-  {
-    "email": "student@college.edu.in",
-    "password": "SecurePassword123"
-  }
-  ```
-- **Response (200 OK):** Returns the `token` and `user` object (same as Verify Email).
+- **`POST /auth/login`**
+- **Body:** `{ "email": "...", "password": "..." }`
+- Returns `token` + `user` object.
 
-### 1.4 Get Current User Profile (Protected)
-- **URL:** `/auth/me`
-- **Method:** `GET`
-- **Headers Required:**
-  `Authorization: Bearer <your_jwt_token>`
-- **Description:** Fetches the currently logged-in user's details.
-- **Response (200 OK):** Returns the user's details.
+### 1.4 Get Current User (Protected)
+- **`GET /auth/me`**
+- Returns the logged-in user's profile.
 
 ### 1.5 Password Management
-- **Forgot Password (`POST /auth/forgot-password`):** Send `{ "email": "..." }` to receive an OTP.
-- **Reset Password (`POST /auth/reset-password`):** Send `{ "email": "...", "otp": "...", "newPassword": "..." }` to update the password.
-- **Resend OTP (`POST /auth/resend-otp`):** Send `{ "email": "..." }` if the OTP expires.
+- **`POST /auth/forgot-password`** — `{ "email": "..." }` → sends reset OTP
+- **`POST /auth/reset-password`** — `{ "email": "...", "otp": "...", "newPassword": "..." }`
+- **`POST /auth/resend-otp`** — `{ "email": "..." }` → resends verification OTP
 
 ---
 
-## 2. Core Features (Communities & Posts)
+## 2. Communities — `/api/communities`
 
-### 2.1 Communities
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/communities` | ✅ | Get all communities in your college |
+| `POST` | `/communities` | ✅ | Create a new community |
+| `POST` | `/communities/:id/join` | ✅ | Join a community |
 
-**Create a Community (Protected)**
-- **URL:** `/api/communities`
-- **Method:** `POST`
-- **Body:** `{ "name": "masti", "description": "Just for fun!" }`
-
-**Get All Communities**
-- **URL:** `/api/communities`
-- **Method:** `GET`
-- **Description:** Returns all communities specifically belonging to the logged-in user's college network.
-
-**Join a Community (Protected)**
-- **URL:** `/api/communities/:id/join`
-- **Method:** `POST`
-
-### 2.2 Anonymous Posts
-
-**Create a Post (Protected)**
-- **URL:** `/api/posts`
-- **Method:** `POST`
-- **Body:** `{ "title": "My Post", "content": "Hello", "communityId": "<community_id>" }`
-
-**Get Posts by Community**
-- **URL:** `/api/posts/community/:communityId`
-- **Method:** `GET`
-- **Description:** Returns posts strictly filtered to the user's college domain. Note that the author will only have their `anonymousName` exposed! You can pass `?sort=new` or `?sort=trending` (default) parameters to change the sorting.
-
-**Upvote/Downvote a Post (Protected)**
-- **URL:** `/api/posts/:id/vote`
-- **Method:** `POST`
-- **Body:** `{ "type": "upvote" }` or `{ "type": "downvote" }`
-
-### 2.3 Comments & Replies
-
-**Create a Comment/Reply (Protected)**
-- **URL:** `/api/comments`
-- **Method:** `POST`
-- **Body:** 
-  ```json
-  { 
-    "content": "Great post!", 
-    "postId": "<post_id>",
-    "parentCommentId": null // Set this to another comment's ID if replying!
-  }
-  ```
-
-**Get Comments for a Post**
-- **URL:** `/api/comments/post/:postId`
-- **Method:** `GET`
-- **Description:** Returns a thread of comments.
-
-**Upvote/Downvote a Comment (Protected)**
-- **URL:** `/api/comments/:id/vote`
-- **Method:** `POST`
-- **Body:** `{ "type": "upvote" }` or `{ "type": "downvote" }`
-
-### 2.4 Search
-
-**Search Communities and Posts**
-- **URL:** `/api/search?q=internship`
-- **Method:** `GET`
-- **Description:** Scans through all community names, descriptions, and post titles/contents strictly within the user's college network.
+**Create body:** `{ "name": "masti", "description": "Just for fun!" }`
 
 ---
 
-## 3. Health & Connection
+## 3. Posts — `/api/posts`
 
-### 3.1 Health Check
-- **URL:** `/health`
-- **Method:** `GET`
-- **Description:** Check if the backend is running properly.
-- **Response:**
-  ```json
-  {
-    "success": true,
-    "message": "🐰 Rabbit API is up and running!",
-    "environment": "development",
-    "timestamp": "..."
-  }
-  ```
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `POST` | `/posts` | ✅ | Create a post (text, poll, or with image) |
+| `GET` | `/posts/community/:communityId` | ✅ | Get posts (`?sort=hot\|new\|top&flair=placement`) |
+| `POST` | `/posts/:id/vote` | ✅ | Upvote/downvote `{ "type": "upvote\|downvote\|none" }` |
+| `POST` | `/posts/:id/vote-poll` | ✅ | Vote on poll option `{ "optionId": "..." }` |
+
+**Create Post body (JSON or multipart/form-data for image upload):**
+```json
+{
+  "title": "My Post",
+  "content": "Hello!",
+  "communityId": "<id>",
+  "flair": "placement",
+  "isPoll": false
+}
+```
+**Available flairs:** `placement`, `exam_help`, `rant`, `advice`, `funny`, `confession`, `discussion`, `question`, `announcement`, `lost_found`
+
+**Image upload:** Send as `multipart/form-data` with field name `image` (jpg/png/gif/webp).
 
 ---
 
-## 💻 Notes for Prateeksha (Frontend UI/UX)
-- **CORS is enabled:** You can make requests directly from your React app (running on `localhost:3000` or `localhost:5173`) to `localhost:5001`.
-- **Authentication:** Whenever a user successfully logs in or verifies their email, you will receive a `token`. You need to attach this token in the `Authorization` header as `Bearer <token>` for any future requests that require the user to be logged in (like `/auth/me`).
-- **Error Handling:** The backend will return a `success: false` and a `message` string if something goes wrong (like "Invalid password" or "Email not verified"). You can display this `message` directly in your UI alerts.
+## 4. Comments — `/api/comments`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `POST` | `/comments` | ✅ | Create comment or reply |
+| `GET` | `/comments/post/:postId` | ✅ | Get all comments for a post |
+| `POST` | `/comments/:id/vote` | ✅ | Upvote/downvote a comment |
+
+**Create body:**
+```json
+{
+  "content": "Great post!",
+  "postId": "<post_id>",
+  "parentCommentId": null
+}
+```
+Set `parentCommentId` to another comment's ID to reply to it.
+
+---
+
+## 5. Events — `/api/events`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/events` | ✅ | List events (`?filter=upcoming\|past\|all&tag=tech`) |
+| `POST` | `/events` | ✅ | Create event |
+| `GET` | `/events/:id` | ✅ | Get single event with attendee list |
+| `POST` | `/events/:id/rsvp` | ✅ | Toggle RSVP (call again to un-RSVP) |
+| `PATCH` | `/events/:id/cancel` | ✅ | Cancel event (organizer or admin) |
+| `GET` | `/events/community/:communityId` | ✅ | Events by community |
+
+**Create body:**
+```json
+{
+  "title": "Tech Talk 2024",
+  "description": "...",
+  "venue": "Main Auditorium",
+  "eventDate": "2024-12-15T18:00:00Z",
+  "clubName": "Tech Club",
+  "communityId": "<optional>",
+  "tags": ["tech", "coding"],
+  "maxAttendees": 100
+}
+```
+
+---
+
+## 6. Reports / Admin — `/api/reports`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `POST` | `/reports` | User | Submit a report |
+| `GET` | `/reports` | Admin | List reports (`?status=pending&targetType=post`) |
+| `PATCH` | `/reports/:id` | Admin | Update status (`reviewed\|action_taken\|dismissed`) |
+| `GET` | `/reports/admin/stats` | Admin | Dashboard — report counts + banned users |
+| `PATCH` | `/reports/admin/ban/:userId` | Admin | Ban a user (`{ "banReason": "..." }`) |
+| `PATCH` | `/reports/admin/unban/:userId` | Admin | Unban a user |
+| `DELETE` | `/reports/admin/post/:postId` | Admin | Delete any post |
+| `DELETE` | `/reports/admin/comment/:commentId` | Admin | Delete any comment |
+
+**Submit report body:**
+```json
+{
+  "targetType": "post",
+  "targetId": "<id>",
+  "reason": "spam",
+  "details": "Optional extra context"
+}
+```
+**Reason options:** `spam`, `harassment`, `hate_speech`, `misinformation`, `inappropriate_content`, `self_harm`, `other`
+
+---
+
+## 7. Anonymous DMs — `/api/dms`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/dms` | ✅ | Inbox — latest message per conversation |
+| `POST` | `/dms` | ✅ | Send a DM |
+| `GET` | `/dms/:anonymousName` | ✅ | Full conversation thread (auto-marks as read) |
+
+**Send DM body:**
+```json
+{
+  "recipientAnonymousName": "Curious Rabbit #4521",
+  "content": "Hey, loved your post!",
+  "originPostId": "<optional post id>"
+}
+```
+
+---
+
+## 8. AMA (Ask Me Anything) — `/api/amas`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/amas` | ✅ | List AMAs (`?filter=open\|closed\|all`) |
+| `POST` | `/amas` | ✅ | Create AMA session |
+| `GET` | `/amas/:id` | ✅ | Single AMA + all questions (sorted by upvotes) |
+| `POST` | `/amas/:id/ask` | ✅ | Ask a question anonymously |
+| `PATCH` | `/amas/:id/answer/:questionId` | ✅ | Answer a question (host only) |
+| `POST` | `/amas/:id/questions/:questionId/upvote` | ✅ | Upvote a question (toggle) |
+| `PATCH` | `/amas/:id/close` | ✅ | Close AMA early (host or admin) |
+
+**Create AMA body:**
+```json
+{
+  "title": "Ask me anything about SDE placements!",
+  "description": "Placed at Google, happy to help.",
+  "hostContext": "2024 Grad, SDE at Google",
+  "endsAt": "2024-12-15T21:00:00Z",
+  "tags": ["placements", "google", "sde"]
+}
+```
+
+---
+
+## 9. Notifications — `/api/notifications`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/notifications` | ✅ | Get all notifications + `unreadCount` |
+| `PATCH` | `/notifications/read-all` | ✅ | Mark all as read |
+| `PATCH` | `/notifications/:id/read` | ✅ | Mark one as read |
+| `DELETE` | `/notifications/:id` | ✅ | Delete a notification |
+
+**Notification types:** `post_reply`, `comment_reply`, `post_upvote`, `badge_earned`, `event_reminder`, `ama_answer`, `dm_received`
+
+> Poll every 30s or use a timer to fetch unread count for the notification bell.
+
+---
+
+## 10. Leaderboard — `/api/leaderboard`
+
+| Method | URL | Auth | Description |
+|---|---|---|---|
+| `GET` | `/leaderboard` | ✅ | Top karma earners + your own rank |
+
+**Query params:** `?limit=10` (max 50)
+
+**Response includes:**
+```json
+{
+  "data": [
+    { "rank": 1, "anonymousName": "...", "karma": 420, "badge": "Top Contributor" }
+  ],
+  "myStats": { "rank": 7, "anonymousName": "...", "karma": 85, "badge": "Active Member" }
+}
+```
+
+---
+
+## 11. Search — `/api/search`
+
+- **`GET /search?q=internship`**
+- Searches post titles/content and community names within your college.
+
+---
+
+## 12. Health Check
+
+- **`GET /health`** — Returns `{ "success": true, "message": "🐰 Rabbit API is up and running!" }`
+
+---
+
+## 💻 Notes for Prateeksha (Frontend)
+
+- **CORS:** Requests from `localhost:3000` or `localhost:5173` are allowed.
+- **Auth:** Save `token` from login/verify-email. Send as `Authorization: Bearer <token>` on all protected routes.
+- **Image uploads:** Use `multipart/form-data` (not JSON) when attaching an image to a post. Field name = `image`.
+- **Notifications bell:** Poll `GET /notifications` every 30 seconds to update unread count.
+- **DMs inbox:** Poll `GET /dms` every 30 seconds or on page focus.
+- **Error handling:** All errors return `{ "success": false, "message": "..." }` — show `message` directly in UI.
+- **Anonymous by default:** `author` on posts/comments is always `{ anonymousName, badge }` — real email is **never** exposed.
 
 Happy Building! 🚀

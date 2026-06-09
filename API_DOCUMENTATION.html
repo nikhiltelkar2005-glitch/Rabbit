@@ -1,198 +1,182 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Light'}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Light'; min-height: 14.0px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rabbit API Documentation 🐰</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 900px; margin: 40px auto; padding: 0 24px; color: #1a1a2e; line-height: 1.6; }
+    h1 { color: #e94560; }
+    h2 { color: #16213e; border-bottom: 2px solid #e94560; padding-bottom: 6px; margin-top: 40px; }
+    h3 { color: #0f3460; margin-top: 24px; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    pre { background: #1a1a2e; color: #e2e2e2; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.88em; }
+    pre code { background: none; padding: 0; color: inherit; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+    th { background: #16213e; color: #fff; padding: 8px 12px; text-align: left; }
+    td { padding: 8px 12px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    .badge { background: #e94560; color: white; border-radius: 4px; padding: 2px 8px; font-size: 0.8em; }
+    .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 16px; border-radius: 4px; margin: 12px 0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 32px 0; }
   </style>
 </head>
 <body>
-<p class="p1"># Rabbit API Documentation 🐰</p>
-<p class="p2"><br></p>
-<p class="p1">Welcome, **Prateeksha** &amp; **Nikhil**!</p>
-<p class="p1">This document explains the current state of the Rabbit Backend API so that the Frontend can easily connect to it.</p>
-<p class="p2"><br></p>
-<p class="p1">The backend now fully supports **Communities**, **Posts**, **Comments**, and features strict **College Silos**, **Trending algorithms**, and **Achievement Badges**!</p>
-<p class="p2"><br></p>
-<p class="p1">## Base URL</p>
-<p class="p1">All requests should be made to:</p>
-<p class="p1">`http://localhost:5001/api`</p>
-<p class="p2"><br></p>
-<p class="p1">---</p>
-<p class="p2"><br></p>
-<p class="p1">## 1. Authentication Endpoints</p>
-<p class="p2"><br></p>
-<p class="p1">These routes handle user login, signup, and verification. They are located under `/api/auth/`.</p>
-<p class="p2"><br></p>
-<p class="p1">### 1.1 Register a New User</p>
-<p class="p1">- **URL:** `/auth/register`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Description:** Creates a new user account. The email *must* end with the college domain (e.g., `@college.edu.in`).</p>
-<p class="p1">- **Body:**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"email": "student@college.edu.in",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"password": "SecurePassword123"</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p1">- **Response (200 OK):**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"success": true,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"message": "OTP sent to your email. Please verify."</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p2"><br></p>
-<p class="p1">### 1.2 Verify Email with OTP</p>
-<p class="p1">- **URL:** `/auth/verify-email`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Description:** Verifies the user's email using the OTP sent during registration.</p>
-<p class="p1">- **Body:**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"email": "student@college.edu.in",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"otp": "123456"</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p1">- **Response (200 OK):**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"success": true,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"user": {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>"id": "60d0fe4f5311236168a109ca",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>"anonymousName": "Curious Rabbit #4521",</p>
-<p class="p1"><span class="Apple-converted-space">      </span>"karma": 150,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>"badge": "Top Contributor"</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p1"><span class="Apple-converted-space">  </span>*(Note: Save the `token` in localStorage or cookies for future requests!)*</p>
-<p class="p2"><br></p>
-<p class="p1">### 1.3 Login</p>
-<p class="p1">- **URL:** `/auth/login`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Description:** Logs in an existing verified user.</p>
-<p class="p1">- **Body:**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"email": "student@college.edu.in",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"password": "SecurePassword123"</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p1">- **Response (200 OK):** Returns the `token` and `user` object (same as Verify Email).</p>
-<p class="p2"><br></p>
-<p class="p1">### 1.4 Get Current User Profile (Protected)</p>
-<p class="p1">- **URL:** `/auth/me`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Headers Required:**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`Authorization: Bearer &lt;your_jwt_token&gt;`</p>
-<p class="p1">- **Description:** Fetches the currently logged-in user's details.</p>
-<p class="p1">- **Response (200 OK):** Returns the user's details.</p>
-<p class="p2"><br></p>
-<p class="p1">### 1.5 Password Management</p>
-<p class="p1">- **Forgot Password (`POST /auth/forgot-password`):** Send `{ "email": "..." }` to receive an OTP.</p>
-<p class="p1">- **Reset Password (`POST /auth/reset-password`):** Send `{ "email": "...", "otp": "...", "newPassword": "..." }` to update the password.</p>
-<p class="p1">- **Resend OTP (`POST /auth/resend-otp`):** Send `{ "email": "..." }` if the OTP expires.</p>
-<p class="p2"><br></p>
-<p class="p1">---</p>
-<p class="p2"><br></p>
-<p class="p1">## 2. Core Features (Communities &amp; Posts)</p>
-<p class="p2"><br></p>
-<p class="p1">### 2.1 Communities</p>
-<p class="p2"><br></p>
-<p class="p1">**Create a Community (Protected)**</p>
-<p class="p1">- **URL:** `/api/communities`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Body:** `{ "name": "masti", "description": "Just for fun!" }`</p>
-<p class="p2"><br></p>
-<p class="p1">**Get All Communities**</p>
-<p class="p1">- **URL:** `/api/communities`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Returns all communities specifically belonging to the logged-in user's college network.</p>
-<p class="p2"><br></p>
-<p class="p1">**Join a Community (Protected)**</p>
-<p class="p1">- **URL:** `/api/communities/:id/join`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p2"><br></p>
-<p class="p1">### 2.2 Anonymous Posts</p>
-<p class="p2"><br></p>
-<p class="p1">**Create a Post (Protected)**</p>
-<p class="p1">- **URL:** `/api/posts`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Body:** `{ "title": "My Post", "content": "Hello", "communityId": "&lt;community_id&gt;" }`</p>
-<p class="p2"><br></p>
-<p class="p1">**Get Posts by Community**</p>
-<p class="p1">- **URL:** `/api/posts/community/:communityId`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Returns posts strictly filtered to the user's college domain. Note that the author will only have their `anonymousName` exposed! You can pass `?sort=new` or `?sort=trending` (default) parameters to change the sorting.</p>
-<p class="p2"><br></p>
-<p class="p1">**Upvote/Downvote a Post (Protected)**</p>
-<p class="p1">- **URL:** `/api/posts/:id/vote`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Body:** `{ "type": "upvote" }` or `{ "type": "downvote" }`</p>
-<p class="p2"><br></p>
-<p class="p1">### 2.3 Comments &amp; Replies</p>
-<p class="p2"><br></p>
-<p class="p1">**Create a Comment/Reply (Protected)**</p>
-<p class="p1">- **URL:** `/api/comments`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Body:**<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>"content": "Great post!",<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>"postId": "&lt;post_id&gt;",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"parentCommentId": null // Set this to another comment's ID if replying!</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p2"><br></p>
-<p class="p1">**Get Comments for a Post**</p>
-<p class="p1">- **URL:** `/api/comments/post/:postId`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Returns a thread of comments.</p>
-<p class="p2"><br></p>
-<p class="p1">**Upvote/Downvote a Comment (Protected)**</p>
-<p class="p1">- **URL:** `/api/comments/:id/vote`</p>
-<p class="p1">- **Method:** `POST`</p>
-<p class="p1">- **Body:** `{ "type": "upvote" }` or `{ "type": "downvote" }`</p>
-<p class="p2"><br></p>
-<p class="p1">### 2.4 Search</p>
-<p class="p2"><br></p>
-<p class="p1">**Search Communities and Posts**</p>
-<p class="p1">- **URL:** `/api/search?q=internship`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Scans through all community names, descriptions, and post titles/contents strictly within the user's college network.</p>
-<p class="p2"><br></p>
-<p class="p1">---</p>
-<p class="p2"><br></p>
-<p class="p1">## 3. Health &amp; Connection</p>
-<p class="p2"><br></p>
-<p class="p1">### 3.1 Health Check</p>
-<p class="p1">- **URL:** `/health`</p>
-<p class="p1">- **Method:** `GET`</p>
-<p class="p1">- **Description:** Check if the backend is running properly.</p>
-<p class="p1">- **Response:**</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```json</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"success": true,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"message": "🐰 Rabbit API is up and running!",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"environment": "development",</p>
-<p class="p1"><span class="Apple-converted-space">    </span>"timestamp": "..."</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>```</p>
-<p class="p2"><br></p>
-<p class="p1">---</p>
-<p class="p2"><br></p>
-<p class="p1">## 💻 Notes for Prateeksha (Frontend UI/UX)</p>
-<p class="p1">- **CORS is enabled:** You can make requests directly from your React app (running on `localhost:3000` or `localhost:5173`) to `localhost:5001`.</p>
-<p class="p1">- **Authentication:** Whenever a user successfully logs in or verifies their email, you will receive a `token`. You need to attach this token in the `Authorization` header as `Bearer &lt;token&gt;` for any future requests that require the user to be logged in (like `/auth/me`).</p>
-<p class="p1">- **Error Handling:** The backend will return a `success: false` and a `message` string if something goes wrong (like "Invalid password" or "Email not verified"). You can display this `message` directly in your UI alerts.</p>
-<p class="p2"><br></p>
-<p class="p1">Happy Building! 🚀</p>
+
+<h1>🐰 Rabbit API Documentation</h1>
+<p>Welcome, <strong>Prateeksha</strong> &amp; <strong>Nikhil</strong>!<br>
+This document covers the complete Rabbit Backend API. The backend supports <strong>Communities, Posts, Comments, Events, AMA, DMs, Notifications, Reports, Leaderboard</strong>, with College Silos, Trending, Badges, Flairs, and Media Uploads.</p>
+
+<div class="note">
+  <strong>Base URL:</strong> <code>http://localhost:5001/api</code><br>
+  <strong>Auth header (protected routes):</strong> <code>Authorization: Bearer &lt;jwt_token&gt;</code>
+</div>
+
+<hr>
+
+<h2>1. Authentication — <code>/api/auth</code></h2>
+
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>POST</td><td><code>/auth/register</code></td><td>Register with college email — sends OTP</td></tr>
+  <tr><td>POST</td><td><code>/auth/verify-email</code></td><td>Verify OTP → returns token + user</td></tr>
+  <tr><td>POST</td><td><code>/auth/login</code></td><td>Login → returns token + user</td></tr>
+  <tr><td>GET</td><td><code>/auth/me</code> ✅</td><td>Get current logged-in user profile</td></tr>
+  <tr><td>POST</td><td><code>/auth/forgot-password</code></td><td>Send password reset OTP</td></tr>
+  <tr><td>POST</td><td><code>/auth/reset-password</code></td><td>Reset password with OTP</td></tr>
+  <tr><td>POST</td><td><code>/auth/resend-otp</code></td><td>Resend verification OTP</td></tr>
+</table>
+
+<hr>
+
+<h2>2. Communities — <code>/api/communities</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/communities</code> ✅</td><td>Get all communities in your college</td></tr>
+  <tr><td>POST</td><td><code>/communities</code> ✅</td><td>Create community <code>{ name, description }</code></td></tr>
+  <tr><td>POST</td><td><code>/communities/:id/join</code> ✅</td><td>Join a community</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Posts — <code>/api/posts</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>POST</td><td><code>/posts</code> ✅</td><td>Create post (text, poll, or image — multipart/form-data)</td></tr>
+  <tr><td>GET</td><td><code>/posts/community/:id</code> ✅</td><td>Get posts <code>?sort=hot|new|top &amp; ?flair=placement</code></td></tr>
+  <tr><td>POST</td><td><code>/posts/:id/vote</code> ✅</td><td>Upvote/downvote <code>{ type: "upvote|downvote|none" }</code></td></tr>
+  <tr><td>POST</td><td><code>/posts/:id/vote-poll</code> ✅</td><td>Vote on poll option <code>{ optionId }</code></td></tr>
+</table>
+<p><strong>Flairs:</strong> <code>placement</code>, <code>exam_help</code>, <code>rant</code>, <code>advice</code>, <code>funny</code>, <code>confession</code>, <code>discussion</code>, <code>question</code>, <code>announcement</code>, <code>lost_found</code></p>
+<p><strong>Image upload:</strong> Send <code>multipart/form-data</code> with field <code>image</code> (jpg/png/gif/webp).</p>
+
+<hr>
+
+<h2>4. Comments — <code>/api/comments</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>POST</td><td><code>/comments</code> ✅</td><td>Create comment/reply <code>{ content, postId, parentCommentId }</code></td></tr>
+  <tr><td>GET</td><td><code>/comments/post/:postId</code> ✅</td><td>Get all comments for a post</td></tr>
+  <tr><td>POST</td><td><code>/comments/:id/vote</code> ✅</td><td>Upvote/downvote a comment</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Events — <code>/api/events</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/events</code> ✅</td><td>List events <code>?filter=upcoming|past|all &amp; ?tag=tech</code></td></tr>
+  <tr><td>POST</td><td><code>/events</code> ✅</td><td>Create event <code>{ title, venue, eventDate, clubName, tags, maxAttendees }</code></td></tr>
+  <tr><td>GET</td><td><code>/events/:id</code> ✅</td><td>Get single event with attendees</td></tr>
+  <tr><td>POST</td><td><code>/events/:id/rsvp</code> ✅</td><td>Toggle RSVP (call again to un-RSVP)</td></tr>
+  <tr><td>PATCH</td><td><code>/events/:id/cancel</code> ✅</td><td>Cancel event (organizer or admin)</td></tr>
+  <tr><td>GET</td><td><code>/events/community/:id</code> ✅</td><td>Events by community</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Reports / Admin — <code>/api/reports</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td><code>/reports</code></td><td>User</td><td>Submit a report</td></tr>
+  <tr><td>GET</td><td><code>/reports</code></td><td>Admin</td><td>List reports <code>?status=pending&amp;targetType=post</code></td></tr>
+  <tr><td>PATCH</td><td><code>/reports/:id</code></td><td>Admin</td><td>Update status (reviewed | action_taken | dismissed)</td></tr>
+  <tr><td>GET</td><td><code>/reports/admin/stats</code></td><td>Admin</td><td>Dashboard — report counts + banned users</td></tr>
+  <tr><td>PATCH</td><td><code>/reports/admin/ban/:userId</code></td><td>Admin</td><td>Ban a user</td></tr>
+  <tr><td>PATCH</td><td><code>/reports/admin/unban/:userId</code></td><td>Admin</td><td>Unban a user</td></tr>
+  <tr><td>DELETE</td><td><code>/reports/admin/post/:postId</code></td><td>Admin</td><td>Delete any post</td></tr>
+  <tr><td>DELETE</td><td><code>/reports/admin/comment/:commentId</code></td><td>Admin</td><td>Delete any comment</td></tr>
+</table>
+
+<hr>
+
+<h2>7. Anonymous DMs — <code>/api/dms</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/dms</code> ✅</td><td>Inbox — latest message per conversation</td></tr>
+  <tr><td>POST</td><td><code>/dms</code> ✅</td><td>Send DM <code>{ recipientAnonymousName, content, originPostId? }</code></td></tr>
+  <tr><td>GET</td><td><code>/dms/:anonymousName</code> ✅</td><td>Full conversation thread (auto-marks as read)</td></tr>
+</table>
+
+<hr>
+
+<h2>8. AMA (Ask Me Anything) — <code>/api/amas</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/amas</code> ✅</td><td>List AMAs <code>?filter=open|closed|all</code></td></tr>
+  <tr><td>POST</td><td><code>/amas</code> ✅</td><td>Create AMA <code>{ title, hostContext, endsAt, tags }</code></td></tr>
+  <tr><td>GET</td><td><code>/amas/:id</code> ✅</td><td>Single AMA + questions sorted by upvotes</td></tr>
+  <tr><td>POST</td><td><code>/amas/:id/ask</code> ✅</td><td>Ask a question <code>{ question }</code></td></tr>
+  <tr><td>PATCH</td><td><code>/amas/:id/answer/:questionId</code> ✅</td><td>Answer (host only) <code>{ answer }</code></td></tr>
+  <tr><td>POST</td><td><code>/amas/:id/questions/:questionId/upvote</code> ✅</td><td>Upvote a question (toggle)</td></tr>
+  <tr><td>PATCH</td><td><code>/amas/:id/close</code> ✅</td><td>Close AMA early (host or admin)</td></tr>
+</table>
+
+<hr>
+
+<h2>9. Notifications — <code>/api/notifications</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/notifications</code> ✅</td><td>Get all + <code>unreadCount</code></td></tr>
+  <tr><td>PATCH</td><td><code>/notifications/read-all</code> ✅</td><td>Mark all as read</td></tr>
+  <tr><td>PATCH</td><td><code>/notifications/:id/read</code> ✅</td><td>Mark one as read</td></tr>
+  <tr><td>DELETE</td><td><code>/notifications/:id</code> ✅</td><td>Delete a notification</td></tr>
+</table>
+<p><strong>Types:</strong> <code>post_reply</code>, <code>comment_reply</code>, <code>post_upvote</code>, <code>badge_earned</code>, <code>event_reminder</code>, <code>ama_answer</code>, <code>dm_received</code></p>
+<div class="note">Poll <code>GET /notifications</code> every 30 seconds to keep the notification bell count updated.</div>
+
+<hr>
+
+<h2>10. Leaderboard — <code>/api/leaderboard</code></h2>
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>GET</td><td><code>/leaderboard?limit=10</code> ✅</td><td>Top karma earners + your own rank</td></tr>
+</table>
+
+<hr>
+
+<h2>11. Search — <code>/api/search</code></h2>
+<p><strong>GET</strong> <code>/search?q=internship</code> — Full-text search across posts and communities in your college.</p>
+
+<hr>
+
+<h2>12. Health Check</h2>
+<p><strong>GET</strong> <code>/health</code> — Returns <code>{ "success": true, "message": "🐰 Rabbit API is up and running!" }</code></p>
+
+<hr>
+
+<h2>💻 Notes for Prateeksha (Frontend)</h2>
+<ul>
+  <li><strong>CORS:</strong> Requests from <code>localhost:3000</code> or <code>localhost:5173</code> work out of the box.</li>
+  <li><strong>Auth:</strong> Save <code>token</code> from login. Send as <code>Authorization: Bearer &lt;token&gt;</code> for protected routes.</li>
+  <li><strong>Image uploads:</strong> Use <code>multipart/form-data</code> (not JSON) when including an image. Field name = <code>image</code>.</li>
+  <li><strong>Notifications bell:</strong> Poll <code>GET /notifications</code> every 30 seconds. Show <code>unreadCount</code> as badge.</li>
+  <li><strong>DMs:</strong> Poll <code>GET /dms</code> every 30 seconds or on window focus.</li>
+  <li><strong>Error handling:</strong> All errors return <code>{ "success": false, "message": "..." }</code> — display <code>message</code> in UI.</li>
+  <li><strong>Anonymity:</strong> <code>author</code> on posts/comments is always <code>{ anonymousName, badge }</code>. Real email is <em>never</em> exposed.</li>
+</ul>
+
+<p><strong>Happy Building! 🚀</strong></p>
+
 </body>
 </html>
