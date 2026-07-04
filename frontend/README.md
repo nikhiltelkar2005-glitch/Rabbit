@@ -17,3 +17,4 @@ If you are developing a production application, we recommend using TypeScript wi
 - docs: update project description in frontend
 - style: refine button hover states
 - fix: resolve input padding issue
+- refactor: optimize auth context rendering
