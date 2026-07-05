@@ -18,3 +18,4 @@ If you are developing a production application, we recommend using TypeScript wi
 - style: refine button hover states
 - fix: resolve input padding issue
 - refactor: optimize auth context rendering
+- feat: add loading states to forms
