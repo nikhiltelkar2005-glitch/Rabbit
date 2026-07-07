@@ -19,3 +19,4 @@ If you are developing a production application, we recommend using TypeScript wi
 - fix: resolve input padding issue
 - refactor: optimize auth context rendering
 - feat: add loading states to forms
+- style: improve card glassmorphism effect
