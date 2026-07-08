@@ -1,0 +1,35 @@
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.feed-header {
+  margin-bottom: 24px;
+}
+
+.feed-header h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  border-left: 4px solid var(--accent-primary);
+  padding-left: 12px;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}
+
+.posts-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error-message {
+  color: var(--error);
+  padding: 16px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
